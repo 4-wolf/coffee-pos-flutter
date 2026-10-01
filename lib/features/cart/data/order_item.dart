@@ -1,4 +1,4 @@
-import 'package:example/models/product.dart';
+import 'package:example/features/menu/data/product.dart';
 
 class OrderItem {
   final Product product;
@@ -7,6 +7,6 @@ class OrderItem {
   OrderItem({required this.product, required this.quantity});
 
   double getSubtotal() {
-    return product.price * quantity;
+    return (product.price).toDouble() * quantity;
   }
 }

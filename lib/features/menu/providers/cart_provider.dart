@@ -1,5 +1,5 @@
-import 'package:example/models/order_item.dart';
-import 'package:example/models/product.dart';
+import 'package:example/features/cart/data/order_item.dart';
+import 'package:example/features/menu/data/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CartNotifier extends Notifier<List<OrderItem>> {
@@ -7,7 +7,7 @@ class CartNotifier extends Notifier<List<OrderItem>> {
   List<OrderItem> build() => [];
 
   void add(Product product) {
-    final index = state.indexWhere((item) => item.product.name == product.name);
+    final index = state.indexWhere((item) => item.product.id == product.id);
 
     if (index == -1) {
       // món chưa có: thêm mới
@@ -29,11 +29,11 @@ class CartNotifier extends Notifier<List<OrderItem>> {
   }
 
   void remove(Product product) {
-    state = state.where((item) => item.product.name != product.name).toList();
+    state = state.where((item) => item.product.id != product.id).toList();
   }
 
   void increaseItem(Product product) {
-    final index = state.indexWhere((item) => item.product.name == product.name);
+    final index = state.indexWhere((item) => item.product.id == product.id);
     if (index == -1) {
       return;
     }
@@ -51,7 +51,7 @@ class CartNotifier extends Notifier<List<OrderItem>> {
   }
 
   void decrease(Product product) {
-    final index = state.indexWhere((item) => item.product.name == product.name);
+    final index = state.indexWhere((item) => item.product.id == product.id);
 
     if (index == -1) {
       return;
