@@ -6,10 +6,12 @@ class CreateOrderRequest {
 
   CreateOrderRequest({required this.items, required this.tableId});
 
-  Map<String, dynamic> toJson() => {
-    'tableId': tableId,
-    'items': items
-        .map((i) => {'productId': i.product.id, 'quantity': i.quantity})
-        .toList(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'tableId': tableId,
+      'items': items.map((item) {
+        return {'productId': item.product.id, 'quantity': item.quantity};
+      }).toList(),
+    };
+  }
 }

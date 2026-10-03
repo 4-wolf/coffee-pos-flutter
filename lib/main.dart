@@ -1,5 +1,6 @@
 import 'package:example/features/menu/presentation/menu_screen.dart';
 import 'package:example/features/menu/providers/product_providers.dart';
+import 'package:example/features/table/presentation/table_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Coffee POS',
-      home: const MenuScreen(),
+      home: const TableScreen(),
     );
   }
 }

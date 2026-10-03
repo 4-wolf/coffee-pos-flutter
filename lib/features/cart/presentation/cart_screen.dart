@@ -1,6 +1,7 @@
 import 'package:example/features/cart/data/create_order_request.dart';
 import 'package:example/features/menu/providers/cart_provider.dart';
 import 'package:example/features/order/data/order_repository.dart';
+import 'package:example/features/table/data/selected_table_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -158,19 +159,31 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 
   Future<void> _checkout() async {
+    final items = ref.read(cartProvider);
+    final selectedTable = ref.read(selectedTableProvider);
+    if (selectedTable == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Chưa chọn bàn')));
+      return;
+    }
+
     setState(() {
       isPlaying = true;
     });
 
     try {
-      final items = ref.read(cartProvider);
-
-      final request = CreateOrderRequest(tableId: 'table-01', items: items);
+      final request = CreateOrderRequest(
+        tableId: selectedTable.id.toString(),
+        items: items,
+      );
 
       await ref.read(orderRepositoryProvider).createOrder(request);
 
       // Thanh toán thành công -> xóa giỏ hàng
       ref.read(cartProvider.notifier).clear();
+
+      // Reset bàn
+      ref.read(selectedTableProvider.notifier).clear();
 
       if (!mounted) {
         return;
@@ -178,20 +191,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
       // Quay lại Menu
       Navigator.pop(context, true);
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
+    } catch (error, stackTrace) {
+      debugPrint('Thanh toán error: $error');
+      debugPrint('Stack: $stackTrace');
+      if (!mounted) return;
 
-      setState(() {
-        isPlaying = false;
-      });
+      setState(() => isPlaying = false);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Thanh toán thất bại. Kiểm tra kết nối mạng.'),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Lỗi: $error')));
     }
   }
 }
